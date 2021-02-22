@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify, redirect, render_template
 import requests
 import json
 import os
@@ -30,7 +30,7 @@ def callback():
     resp = {}
     for activities in reqActivities:
         resp[activities["name"]] = activities["distance"]
-    return 'Hello, ' + req["athlete"]["firstname"] + '\n.....You have done: ' + json.dumps(resp, separators=(',', ':'))  + ' since Feb 15'
+    return render_template('index.html', title='Asha Tri', user=req["athlete"]["firstname"], info=json.dumps(resp, separators=(',', ':')))
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
