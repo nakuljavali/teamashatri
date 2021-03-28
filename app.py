@@ -23,14 +23,34 @@ def callback():
     # Get authorization code Google sent back to you
     code = request.args.get("code")
     req = requests.post("https://www.strava.com/oauth/token?client_id={}&client_secret={}&code={}&grant_type=authorization_code".format(client_id, client_secret, code)).json()
-    headers = {"Authorization": "Bearer {}".format(req["access_token"])}
+    access_token = req['access_token']
     # After 15th Feb (Unix Time)
-    params = {"after": 1612975348}
-    reqActivities = requests.get(url, headers = headers, params = params).json()
-    resp = {}
-    for activities in reqActivities:
-        resp[activities["name"]] = activities["distance"]
-    return render_template('index.html', title='Asha Tri', user=req["athlete"]["firstname"], info=json.dumps(resp, separators=(',', ':')))
+    params = {"after": 1613376000}
+    category1 = "Run/Walk/Hike"
+    category2 = "Ride"
+    category3 = "Swim"
+    resp = {"Run/Walk/Hike":0, "Ride":0, "Swim":0}
+
+    page = 1
+    while True:
+        response = requests.get(url+ '?access_token=' + access_token + '&per_page=50' + '&page=' + str(page), params = params)
+        reqActivities = response.json()
+        if (not reqActivities):
+            break
+        for activities in reqActivities:
+            if (activities["type"]=="Run" or activities["type"]=="Walk" or activities["type"]=="Hike"):
+                resp[category1] += activities["distance"]*0.000621371192
+            elif (activities["type"]=="Ride"):
+                resp[category2] += activities["distance"]*0.000621371192
+            elif (activities["type"]=="Swim"):
+                resp[category3] += (activities["distance"]*0.000621371192)
+        page += 1
+
+    resp[category1] = round(resp[category1],2)
+    resp[category2] = round(resp[category2],2)
+    resp[category3] = round(resp[category3],2)
+
+    return render_template('index.html', title='Asha Tri', user=req["athlete"]["firstname"], run=resp[category1],ride=resp[category2],swim=resp[category3])
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
