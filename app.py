@@ -15,7 +15,7 @@ domain = os.getenv('DOMAIN')
 # A welcome message to test our server
 @app.route('/')
 def index():
-    request_uri = "https://www.strava.com/oauth/authorize?client_id={}&response_type=code&redirect_uri=http://{}/login/callback&approval_prompt=force&scope=read,activity:read".format(client_id, domain)
+    request_uri = "https://www.strava.com/oauth/authorize?client_id={}&response_type=code&redirect_uri=https://{}/login/callback&approval_prompt=force&scope=read,activity:read".format(client_id, domain)
     return redirect(request_uri)
 
 @app.route("/login/callback")
