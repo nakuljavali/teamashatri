@@ -40,7 +40,7 @@ def callback():
         for activities in reqActivities:
             if (activities["type"]=="Run" or activities["type"]=="Walk" or activities["type"]=="Hike"):
                 resp[category1] += activities["distance"]*0.000621371192
-            elif (activities["type"]=="Ride"):
+            elif (activities["type"]=="Ride" or activities["type"]=="VirtualRide"):
                 resp[category2] += activities["distance"]*0.000621371192
             elif (activities["type"]=="Swim"):
                 resp[category3] += (activities["distance"]*0.000621371192)
